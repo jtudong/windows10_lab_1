@@ -25,10 +25,10 @@
                 "description": "The name of the VNET"
             }
         },
-        "firewallResourceGroupName": {
+        "ResourceGroupName": {
             "type": "string",
             "metadata": {
-                "description": "The name of the firewall resource group"
+                "description": "The name of the resource group"
             }
         },
         "gitBranch": {
@@ -37,10 +37,105 @@
                 "description": "The name of the current git branch"
             },
             "defaultValue": "master"
+        },
+        "vmName": {
+            "type": "string",
+            "defaultValue": "windowsVM1",
+            "maxLength": 15,
+            "metadata": {
+                "description": "The name of the virtual machine"
+            }
+        },
+        "subnetName": {
+            "type": "string",
+            "defaultValue": "Subnet-1",
+            "metadata": {
+                "description": "The name of the subnet"
+            }
+        },
+        "storageAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the storage account"
+            }
         }
     },
     "functions": [],
-    "variables": {},
-    "resources": [],
+    "variables": {
+        "tags": {
+            "Department": "it",
+            "Team": "networking",
+            "Environment": "[parameters('environment')]",
+            "Application": "network"
+        },
+        "templateBaseUrl": "[concat('https://raw.githubusercontent.com/jtudong/windows10_lab_1/',parameters('gitBranch'),'/')]",
+        "namePublicIPAddress": "[concat(parameters('subnetName'),'-pip')]",
+        "nsgName": "[concat(parameters('subnetName'),'-nsg')]",
+        "networkInterfaceName": "[concat(parameters('vmName'),'-01','-nic')]",
+        "osDiskName": "[concat(parameters('vmName'),'-os-disk')]"
+    },
+    "resources": [
+        {
+            //  Create the NSG
+            //
+            "name": "[variables('nsgName')]",
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2020-11-01",
+            "location": "[parameters('location')]",
+            "tags": "[variables('tags')]",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "AllowRDPInbound",
+                        "properties": {
+                            "description": "description",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "3389",
+                            "sourceAddressPrefixes": [
+                                "72.208.101.143",
+                                "4.1.98.242",
+                                "63.156.58.0/24",
+                                "172.23.8.0/22"
+                            ],
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Inbound"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            //  Create the VNet
+            //
+            "name": "[parameters('virtualNetworkName')]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2020-11-01",
+            "condition": true,
+            "location": "[parameters('location')]",
+            "dependsOn": [],
+            "tags": "[variables('tags')]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.16.0.0/16"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[parameters('subnetName')]",
+                        "properties": {
+                            "addressPrefix": "10.16.9.0/24",
+                            "networkSecurityGroup": {
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ],
     "outputs": {}
 }

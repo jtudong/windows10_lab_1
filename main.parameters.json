@@ -11,11 +11,14 @@
         "virtualNetworkName": {
             "value": "sfc01-wu3-dev-vnet__"
         },
-        "firewallResourceGroupName": {
+        "ResourceGroupName": {
             "value": "sfc-firewalltest-dev-rg__"
         },
         "gitBranch": {
             "value": "master"
+        },
+        "storageAccountName": {
+            "value": "sfcfwtest20220427sa"
         }
     }
 }
