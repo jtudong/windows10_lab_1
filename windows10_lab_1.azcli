@@ -1,0 +1,7 @@
+az account set -s 'Network Sandbox'
+cd /mnt/c/Users/jtudong/code/windows10_lab_1
+
+az group delete -n sfc-network-dev-rg__ --yes&&az group delete -n sfc-firewall-dev-rg__ --yes
+
+az deployment sub validate -l westus3 -f main.json -p main.parameters.json
+az deployment sub create -c -l westus3 -f main.json -p main.parameters.json
