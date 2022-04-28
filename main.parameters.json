@@ -19,6 +19,9 @@
         },
         "storageAccountName": {
             "value": "sfcfwtest20220427sa"
+        },
+        "subnetName": {
+            "value": "dev-firewalltest"
         }
     }
 }
