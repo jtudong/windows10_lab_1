@@ -158,8 +158,6 @@
                             "type": "Microsoft.Network/virtualNetworks",
                             "apiVersion": "2020-11-01",
                             "condition": true,
-                            "scope": "",
-                            "location": "[parameters('location')]",
                             "dependsOn": [],
                             "tags": "[variables('tags')]",
                             "properties": {
