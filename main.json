@@ -145,7 +145,6 @@
             "dependsOn": [
                 "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
             ],
-            "location": "[parameters('location')]",
             "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -158,6 +157,7 @@
                             "type": "Microsoft.Network/virtualNetworks",
                             "apiVersion": "2020-11-01",
                             "condition": true,
+                            "location": "[parameters('location')]",
                             "dependsOn": [],
                             "tags": "[variables('tags')]",
                             "properties": {
