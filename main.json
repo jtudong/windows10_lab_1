@@ -64,6 +64,12 @@
             "metadata": {
                 "description": "The name of the vnet resource group"
             }
+        },
+        "routeTableDeploymentTemplateName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Route Table template"
+            }
         }
     },
     "functions": [],
@@ -120,7 +126,8 @@
             "apiVersion": "2021-04-01",
             "resourceGroup": "[parameters('networkResourceGroupName')]",
             "dependsOn": [
-                "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+                "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]",
+                "[resourceId(parameters('ResourceGroupName'),'Microsoft.Resources/deployments', 'linkedDeploymentRT')]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -156,6 +163,31 @@
                         }
                     ],
                     "outputs": {}
+                }
+            }
+        },
+        {
+            "name": "linkedDeploymentRT",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "condition": true,
+            "resourceGroup": "[parameters('ResourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('templateBaseUrl'),parameters('routeTableDeploymentTemplateName'))]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "environment": {
+                        "value": "[parameters('environment')]"
+                    },
+                    "subnetName": {
+                        "value": "[parameters('subnetName')]"
+                    }
                 }
             }
         }
