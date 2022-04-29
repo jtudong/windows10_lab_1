@@ -171,7 +171,15 @@
                                     "addressPrefixes": [
                                         "10.16.0.0/16"
                                     ]
-                                }
+                                },
+                                "subnets":[
+                                    {
+                                        "name": "[parameters('subnetName')]",
+                                        "properties": {
+                                            "addressPrefix": "10.16.9.0/24"
+                                        }
+                                    }
+                                ]
                             }
                         }
                     ],
