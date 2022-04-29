@@ -107,13 +107,14 @@
                 ]
             }
         },
-        {
+        /*  {
             //  Create the VNet
             //
             "name": "[parameters('virtualNetworkName')]",
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2020-11-01",
             "condition": true,
+            "scope": "",
             "location": "[parameters('location')]",
             "dependsOn": [],
             "tags": "[variables('tags')]",
@@ -134,6 +135,44 @@
                         }
                     }
                 ]
+            }
+        } */
+        {
+            "name": "nestedDeploymentVnet",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "resourceGroup": "[parameters('ResourceGroupName')]",
+            "dependsOn": [
+                "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+            ],
+            "location": "[parameters('location')]",
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "variables": {},
+                    "resources": [
+                        {
+                            "name": "[parameters('virtualNetworkName')]",
+                            "type": "Microsoft.Network/virtualNetworks",
+                            "apiVersion": "2020-11-01",
+                            "condition": true,
+                            "scope": "",
+                            "location": "[parameters('location')]",
+                            "dependsOn": [],
+                            "tags": "[variables('tags')]",
+                            "properties": {
+                                "addressSpace": {
+                                    "addressPrefixes": [
+                                        "10.16.0.0/16"
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    "outputs": {}
+                }
             }
         }
     ],
