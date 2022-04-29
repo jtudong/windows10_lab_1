@@ -34,4 +34,25 @@ jobs:
           template: ./rg.json
           parameters: ./rg.parameters.json
           deploymentName: resourcegroup
-          
+
+  armDeployMainTemplate:
+    runs-on:  ubuntu-latest
+    needs:  armDeployResourceGroup
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Azure Login
+        uses: Azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIAL_NETWORK_SANDBOX }}
+
+      - name: deploy-main-template
+        uses: Azure/arm-deploy@v1
+        with:
+          scope: resourcegroup
+          resourceGroupName:  ${{ env.networkResourceGroup }}
+          subscriptionID: ${{ env.subscription_id}}
+          region: ${{ env.location}}
+          template: ./main.json
+          parameters: ./main.parameters.json
+          deploymentName: main  
