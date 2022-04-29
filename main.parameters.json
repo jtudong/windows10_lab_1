@@ -22,6 +22,9 @@
         },
         "subnetName": {
             "value": "dev-firewalltest"
+        },
+        "networkResourceGroupName": {
+            "value": "sfc-network-dev-rg__"
         }
     }
 }

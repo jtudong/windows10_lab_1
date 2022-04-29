@@ -58,6 +58,12 @@
             "metadata": {
                 "description": "The name of the storage account"
             }
+        },
+        "networkResourceGroupName": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the vnet resource group"
+            }
         }
     },
     "functions": [],
@@ -141,7 +147,7 @@
             "name": "nestedDeploymentVnet",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-04-01",
-            "resourceGroup": "[parameters('ResourceGroupName')]",
+            "resourceGroup": "[parameters('networkResourceGroupName')]",
             "dependsOn": [
                 "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
             ],
