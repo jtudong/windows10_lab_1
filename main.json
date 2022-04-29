@@ -127,10 +127,10 @@
                     {
                         "name": "[parameters('subnetName')]",
                         "properties": {
-                            "addressPrefix": "10.16.9.0/24",
+                            "addressPrefix": "10.16.9.0/24"/* ,
                             "networkSecurityGroup": {
                                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
-                            }
+                            } */
                         }
                     }
                 ]
