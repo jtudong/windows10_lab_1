@@ -70,6 +70,13 @@
             "metadata": {
                 "description": "The name of the Route Table template"
             }
+        },
+        "createRouteTable": {
+            "type": "bool",
+            "metadata": {
+                "description": "Flag for the route table creation"
+            },
+            "defaultValue": false
         }
     },
     "functions": [],
@@ -124,6 +131,7 @@
             "name": "nestedDeploymentVnet",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-04-01",
+            "condition": "[parameters('createRouteTable')]",
             "resourceGroup": "[parameters('networkResourceGroupName')]",
             "dependsOn": [
                 "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]",
@@ -155,7 +163,10 @@
                                         "name": "[parameters('subnetName')]",
                                         "properties": {
                                             "addressPrefix": "10.16.9.0/24",
-                                            "networkSecurityGroup": { "id": "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]" }
+                                            "networkSecurityGroup": { "id": "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]" },
+                                            "routeTable": {
+                                                "id": "[reference('linkedDeploymentRT').outputs.routeTableID.value]"
+                                            }
                                         }
                                     }
                                 ]

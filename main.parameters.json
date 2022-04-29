@@ -28,6 +28,9 @@
         },
         "routeTableDeploymentTemplateName": {
             "value": "routetable.json"
+        },
+        "createRouteTable": {
+            "value": true
         }
     }
 }
