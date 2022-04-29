@@ -12,6 +12,7 @@ env:
   # Network Sandbox
   subscriptionID: 17df786b-c9ea-4f50-9cb0-57b80e526f55
   networkResourceGroup: sfc-network-dev-rg__
+  ResourceGroup: sfc-firewalltest-dev-rg__
 
 jobs:
   armDeployResourceGroup:
@@ -50,7 +51,7 @@ jobs:
         uses: Azure/arm-deploy@v1
         with:
           scope: resourcegroup
-          resourceGroupName:  ${{ env.networkResourceGroup }}
+          resourceGroupName:  ${{ env.ResourceGroup }}
           subscriptionID: ${{ env.subscription_id}}
           region: ${{ env.location}}
           template: ./main.json
