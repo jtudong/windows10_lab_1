@@ -81,9 +81,9 @@
         "osDiskName": "[concat(parameters('vmName'),'-os-disk')]"
     },
     "resources": [
+        //  Create the NSG
         {
-            //  Create the NSG
-            //
+
             "name": "[variables('nsgName')]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "2020-11-01",
@@ -113,36 +113,7 @@
                 ]
             }
         },
-        /*  {
-            //  Create the VNet
-            //
-            "name": "[parameters('virtualNetworkName')]",
-            "type": "Microsoft.Network/virtualNetworks",
-            "apiVersion": "2020-11-01",
-            "condition": true,
-            "scope": "",
-            "location": "[parameters('location')]",
-            "dependsOn": [],
-            "tags": "[variables('tags')]",
-            "properties": {
-                "addressSpace": {
-                    "addressPrefixes": [
-                        "10.16.0.0/16"
-                    ]
-                },
-                "subnets": [
-                    {
-                        "name": "[parameters('subnetName')]",
-                        "properties": {
-                            "addressPrefix": "10.16.9.0/24",
-                            "networkSecurityGroup": {
-                                "id": "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups',variables('nsgName'))]"
-                            }
-                        }
-                    }
-                ]
-            }
-        } */
+        //  Create the Vnet
         {
             "name": "nestedDeploymentVnet",
             "type": "Microsoft.Resources/deployments",
@@ -172,12 +143,12 @@
                                         "10.16.0.0/16"
                                     ]
                                 },
-                                "subnets":[
+                                "subnets": [
                                     {
                                         "name": "[parameters('subnetName')]",
                                         "properties": {
                                             "addressPrefix": "10.16.9.0/24",
-                                            "networkSecurityGroup": {"id":"[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"}
+                                            "networkSecurityGroup": { "id": "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]" }
                                         }
                                     }
                                 ]
