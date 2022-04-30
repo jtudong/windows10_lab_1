@@ -3,5 +3,8 @@ cd /mnt/c/Users/jtudong/code/windows10_lab_1
 
 az group delete -n sfc-network-dev-rg__ --yes&&az group delete -n sfc-firewalltest-dev-rg__ --yes
 
+az deployment sub validate -l westus3 -f rg.json -p rg.parameters.json
+az deployment sub create -c -l westus3 -f rg.json -p rg.parameters.json
+
 az deployment group validate -g sfc-firewalltest-dev-rg__ -f main.json -p main.parameters.json
 az deployment group create -c -g sfc-firewalltest-dev-rg__ -f main.json -p main.parameters.json
