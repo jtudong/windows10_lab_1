@@ -192,7 +192,7 @@
                                         "name": "[parameters('subnetName')]",
                                         "properties": {
                                             "addressPrefix": "10.16.9.0/24",
-                                            "networkSecurityGroup": { "id": "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]" },
+                                            "networkSecurityGroup": { "id": "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]" }
                                         }
                                     }
                                 ]
