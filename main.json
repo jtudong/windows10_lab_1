@@ -131,7 +131,7 @@
             "name": "nestedDeploymentVnet",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-04-01",
-            "condition": "[parameters('createRouteTable')]",
+            "condition": true,
             "resourceGroup": "[parameters('networkResourceGroupName')]",
             "dependsOn": [
                 "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]",
@@ -148,7 +148,8 @@
                             "name": "[parameters('virtualNetworkName')]",
                             "type": "Microsoft.Network/virtualNetworks",
                             "apiVersion": "2020-11-01",
-                            "condition": true,
+                            // deploy when createRouteTable is true
+                            "condition": "[parameters('createRouteTable')]",
                             "location": "[parameters('location')]",
                             "dependsOn": [],
                             "tags": "[variables('tags')]",
@@ -171,6 +172,31 @@
                                     }
                                 ]
                             }
+                        },
+                        {
+                            "name": "[parameters('virtualNetworkName')]",
+                            "type": "Microsoft.Network/virtualNetworks",
+                            "apiVersion": "2020-11-01",
+                            // deploy when createRouteTable is false
+                            "condition": "[not(parameters('createRouteTable'))]",
+                            "location": "[parameters('location')]",
+                            "tags": "[variables('tags')]",
+                            "properties": {
+                                "addressSpace": {
+                                    "addressPrefixes": [
+                                        "10.16.0.0/16"
+                                    ]
+                                },
+                                "subnets": [
+                                    {
+                                        "name": "[parameters('subnetName')]",
+                                        "properties": {
+                                            "addressPrefix": "10.16.9.0/24",
+                                            "networkSecurityGroup": { "id": "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]" },
+                                        }
+                                    }
+                                ]
+                            }
                         }
                     ],
                     "outputs": {}
@@ -181,7 +207,7 @@
             "name": "linkedDeploymentRT",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-04-01",
-            "condition": true,
+            "condition": "[parameters('createRouteTable')]",
             "resourceGroup": "[parameters('ResourceGroupName')]",
             "properties": {
                 "mode": "Incremental",
