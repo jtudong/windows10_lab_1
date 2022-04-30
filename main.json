@@ -134,8 +134,9 @@
             "condition": true,
             "resourceGroup": "[parameters('networkResourceGroupName')]",
             "dependsOn": [
-                "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]",
-                "[resourceId(parameters('ResourceGroupName'),'Microsoft.Resources/deployments', 'linkedDeploymentRT')]"
+                "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+                //,
+                //"[resourceId(parameters('ResourceGroupName'),'Microsoft.Resources/deployments', 'linkedDeploymentRT')]"
             ],
             "properties": {
                 "mode": "Incremental",
