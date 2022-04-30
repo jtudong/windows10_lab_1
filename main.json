@@ -166,13 +166,13 @@
                                         "properties": {
                                             "addressPrefix": "10.16.9.0/24",
                                             "networkSecurityGroup": { "id": "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]" }
-                                            //,
+                                            ,
                                             /* "routeTable": {
                                                 "id": "[reference('linkedDeploymentRT').outputs.routeTableID.value]"
                                             } */
-                                            /* "routeTable":  {
+                                            "routeTable":  {
                                                 "id": "[if(parameters('createRouteTable'),reference('linkedDeploymentRT').outputs.routeTableID.value,json('null'))]"
-                                            } */
+                                            }
                                         }
                                     }
                                 ]
