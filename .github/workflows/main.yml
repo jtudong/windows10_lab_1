@@ -4,7 +4,9 @@ name: armTemplateDeployment
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master *rework ]
+    branches:
+      - master
+      - '*rework'
   workflow_dispatch:
 
 env:
