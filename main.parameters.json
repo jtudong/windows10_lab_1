@@ -15,10 +15,10 @@
             "value": "sfc-firewalltest-dev-rg__"
         },
         "gitBranch": {
-            "value": "rt_rework"
+            "value": "main_rework"
         },
-        "storageAccountName": {
-            "value": "sfcfwtest20220427sa"
+        "storageAccountPrefix": {
+            "value": "fwtest"
         },
         "subnetName": {
             "value": "dev-firewalltest"
@@ -30,7 +30,7 @@
             "value": "routetable.json"
         },
         "createRouteTable": {
-            "value": true
+            "value": false
         }
     }
 }

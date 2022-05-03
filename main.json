@@ -53,11 +53,13 @@
                 "description": "The name of the subnet"
             }
         },
-        "storageAccountName": {
+        "storageAccountPrefix": {
             "type": "string",
             "metadata": {
-                "description": "The name of the storage account"
-            }
+                "description": "The name prefix for the storage account"
+            },
+            "minLength": 3,
+            "maxLength": 9
         },
         "networkResourceGroupName": {
             "type": "string",
@@ -91,7 +93,8 @@
         "namePublicIPAddress": "[concat(parameters('subnetName'),'-pip')]",
         "nsgName": "[concat(parameters('subnetName'),'-nsg')]",
         "networkInterfaceName": "[concat(parameters('vmName'),'-01','-nic')]",
-        "osDiskName": "[concat(parameters('vmName'),'-os-disk')]"
+        "osDiskName": "[concat(parameters('vmName'),'-os-disk')]",
+        "storageAccountName":"[concat('sfc',parameters('storageAccountPrefix'),uniqueString(resourceGroup().id),'sa')]"
     },
     "resources": [
         //  Create the NSG
@@ -126,17 +129,69 @@
                 ]
             }
         },
-        //  Create the Vnet
+        //  Create the Vnet with route table
         {
             "name": "nestedDeploymentVnet",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-04-01",
-            "condition": true,
+            "condition": "[parameters('createRouteTable')]",
             "resourceGroup": "[parameters('networkResourceGroupName')]",
             "dependsOn": [
                 "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
-                //,
-                //"[resourceId(parameters('ResourceGroupName'),'Microsoft.Resources/deployments', 'linkedDeploymentRT')]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "variables": {},
+                    "resources": [
+                        {
+                            "name": "[parameters('virtualNetworkName')]",
+                            "type": "Microsoft.Network/virtualNetworks",
+                            "apiVersion": "2020-11-01",
+                            // deploy when createRouteTable is true
+                            "condition": true,
+                            "location": "[parameters('location')]",
+                            "dependsOn": [],
+                            "tags": "[variables('tags')]",
+                            "properties": {
+                                "addressSpace": {
+                                    "addressPrefixes": [
+                                        "10.16.0.0/16"
+                                    ]
+                                },
+                                "subnets": [
+                                    {
+                                        "name": "[parameters('subnetName')]",
+                                        "properties": {
+                                            "addressPrefix": "10.16.9.0/24",
+                                            "networkSecurityGroup": { "id": "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]" },
+                                            /* "routeTable": {
+                                                "id": "[reference('linkedDeploymentRT').outputs.routeTableID.value]"
+                                            } */
+                                            "routeTable": {
+                                                "id": "[if(parameters('createRouteTable'),reference('linkedDeploymentRT').outputs.routeTableID.value,json('null'))]"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "outputs": {}
+                }
+            }
+        },
+        //  Create the Vnet no route table
+        {
+            "name": "nestedDeploymentVnetNoRt",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "condition": "[not(parameters('createRouteTable'))]",
+            "resourceGroup": "[parameters('networkResourceGroupName')]",
+            "dependsOn": [
+                "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -166,13 +221,6 @@
                                         "properties": {
                                             "addressPrefix": "10.16.9.0/24",
                                             "networkSecurityGroup": { "id": "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]" }
-                                            ,
-                                            /* "routeTable": {
-                                                "id": "[reference('linkedDeploymentRT').outputs.routeTableID.value]"
-                                            } */
-                                            "routeTable":  {
-                                                "id": "[if(parameters('createRouteTable'),reference('linkedDeploymentRT').outputs.routeTableID.value,json('null'))]"
-                                            }
                                         }
                                     }
                                 ]
@@ -183,6 +231,7 @@
                 }
             }
         },
+        // create the route table
         {
             "name": "linkedDeploymentRT",
             "type": "Microsoft.Resources/deployments",
@@ -206,6 +255,19 @@
                         "value": "[parameters('subnetName')]"
                     }
                 }
+            }
+        },
+        // create the storage account
+        {
+            "name": "[variables('storageAccountName')]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2021-04-01",
+            "tags": "[variables('tags')]",
+            "location": "[parameters('location')]",
+            "kind": "StorageV2",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
             }
         }
     ],
