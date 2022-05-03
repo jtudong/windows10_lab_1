@@ -17,8 +17,8 @@
         "gitBranch": {
             "value": "main_rework"
         },
-        "storageAccountName": {
-            "value": "sfcfwtest20220427sa"
+        "storageAccountPrefix": {
+            "value": "fwtest"
         },
         "subnetName": {
             "value": "dev-firewalltest"
