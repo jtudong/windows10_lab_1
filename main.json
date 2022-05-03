@@ -165,14 +165,61 @@
                                         "name": "[parameters('subnetName')]",
                                         "properties": {
                                             "addressPrefix": "10.16.9.0/24",
-                                            "networkSecurityGroup": { "id": "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]" }
-                                            ,
+                                            "networkSecurityGroup": { "id": "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]" },
                                             /* "routeTable": {
                                                 "id": "[reference('linkedDeploymentRT').outputs.routeTableID.value]"
                                             } */
-                                            "routeTable":  {
+                                            "routeTable": {
                                                 "id": "[if(parameters('createRouteTable'),reference('linkedDeploymentRT').outputs.routeTableID.value,json('null'))]"
                                             }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "outputs": {}
+                }
+            }
+        },
+        //  Create the Vnet no route table
+        {
+            "name": "nestedDeploymentVnetNoRt",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "condition": "[not(parameters('createRouteTable'))]",
+            "resourceGroup": "[parameters('networkResourceGroupName')]",
+            "dependsOn":[
+                "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "variables": {},
+                    "resources": [
+                        {
+                            "name": "[parameters('virtualNetworkName')]",
+                            "type": "Microsoft.Network/virtualNetworks",
+                            "apiVersion": "2020-11-01",
+                            // deploy when createRouteTable is true
+                            "condition": true,
+                            "location": "[parameters('location')]",
+                            "dependsOn": [],
+                            "tags": "[variables('tags')]",
+                            "properties": {
+                                "addressSpace": {
+                                    "addressPrefixes": [
+                                        "10.16.0.0/16"
+                                    ]
+                                },
+                                "subnets": [
+                                    {
+                                        "name": "[parameters('subnetName')]",
+                                        "properties": {
+                                            "addressPrefix": "10.16.9.0/24",
+                                            "networkSecurityGroup": { "id": "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]" }
                                         }
                                     }
                                 ]
