@@ -126,12 +126,12 @@
                 ]
             }
         },
-        //  Create the Vnet
+        //  Create the Vnet with route table
         {
             "name": "nestedDeploymentVnet",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-04-01",
-            "condition": true,
+            "condition": "[parameters('createRouteTable')]",
             "resourceGroup": "[parameters('networkResourceGroupName')]",
             "dependsOn": [
                 "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
