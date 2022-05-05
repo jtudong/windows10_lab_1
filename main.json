@@ -94,7 +94,7 @@
         "nsgName": "[concat(parameters('subnetName'),'-nsg')]",
         "networkInterfaceName": "[concat(parameters('vmName'),'-01','-nic')]",
         "osDiskName": "[concat(parameters('vmName'),'-os-disk')]",
-        "storageAccountName":"[concat('sfc',parameters('storageAccountPrefix'),uniqueString(resourceGroup().id),'sa')]"
+        "storageAccountName": "[concat('sfc',parameters('storageAccountPrefix'),uniqueString(resourceGroup().id),'sa')]"
     },
     "resources": [
         //  Create the NSG
@@ -201,6 +201,30 @@
             },
             "sku": {
                 "name": "Basic"
+            }
+        },
+        {
+            "name": "[variables('networkInterfaceName')]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2020-11-01",
+            "location": "[parameters('location')]",
+            "tags": "[variables('tags')]",
+            "dependsOn": [],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipConfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[resourceId(parameters('networkResourceGroupName'),'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
+                            },
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('namePublicIPAddress'))]"
+                            }
+                        }
+                    }
+                ]
             }
         }
     ],
