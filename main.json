@@ -99,7 +99,6 @@
     "resources": [
         //  Create the NSG
         {
-
             "name": "[variables('nsgName')]",
             "type": "Microsoft.Network/networkSecurityGroups",
             "apiVersion": "2020-11-01",
@@ -129,60 +128,6 @@
                 ]
             }
         },
-        //  Create the Vnet with route table
-        {
-            "name": "nestedDeploymentVnet",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2021-04-01",
-            "condition": "[parameters('createRouteTable')]",
-            "resourceGroup": "[parameters('networkResourceGroupName')]",
-            "dependsOn": [
-                "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "variables": {},
-                    "resources": [
-                        {
-                            "name": "[parameters('virtualNetworkName')]",
-                            "type": "Microsoft.Network/virtualNetworks",
-                            "apiVersion": "2020-11-01",
-                            // deploy when createRouteTable is true
-                            "condition": true,
-                            "location": "[parameters('location')]",
-                            "dependsOn": [],
-                            "tags": "[variables('tags')]",
-                            "properties": {
-                                "addressSpace": {
-                                    "addressPrefixes": [
-                                        "10.16.0.0/16"
-                                    ]
-                                },
-                                "subnets": [
-                                    {
-                                        "name": "[parameters('subnetName')]",
-                                        "properties": {
-                                            "addressPrefix": "10.16.9.0/24",
-                                            "networkSecurityGroup": { "id": "[resourceId(parameters('ResourceGroupName'),'Microsoft.Network/networkSecurityGroups', variables('nsgName'))]" },
-                                            /* "routeTable": {
-                                                "id": "[reference('linkedDeploymentRT').outputs.routeTableID.value]"
-                                            } */
-                                            "routeTable": {
-                                                "id": "[if(parameters('createRouteTable'),reference('linkedDeploymentRT').outputs.routeTableID.value,json('null'))]"
-                                            }
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    ],
-                    "outputs": {}
-                }
-            }
-        },
         //  Create the Vnet no route table
         {
             "name": "nestedDeploymentVnetNoRt",
@@ -204,7 +149,6 @@
                             "name": "[parameters('virtualNetworkName')]",
                             "type": "Microsoft.Network/virtualNetworks",
                             "apiVersion": "2020-11-01",
-                            // deploy when createRouteTable is true
                             "condition": true,
                             "location": "[parameters('location')]",
                             "dependsOn": [],
@@ -228,32 +172,6 @@
                         }
                     ],
                     "outputs": {}
-                }
-            }
-        },
-        // create the route table
-        {
-            "name": "linkedDeploymentRT",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2021-04-01",
-            "condition": "[parameters('createRouteTable')]",
-            "resourceGroup": "[parameters('ResourceGroupName')]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('templateBaseUrl'),parameters('routeTableDeploymentTemplateName'))]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "location": {
-                        "value": "[parameters('location')]"
-                    },
-                    "environment": {
-                        "value": "[parameters('environment')]"
-                    },
-                    "subnetName": {
-                        "value": "[parameters('subnetName')]"
-                    }
                 }
             }
         },

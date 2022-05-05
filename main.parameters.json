@@ -15,7 +15,7 @@
             "value": "sfc-firewalltest-dev-rg__"
         },
         "gitBranch": {
-            "value": "main_rework"
+            "value": "main_devel"
         },
         "storageAccountPrefix": {
             "value": "fwtest"
