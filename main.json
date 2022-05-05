@@ -187,6 +187,21 @@
                 "name": "Standard_LRS",
                 "tier": "Standard"
             }
+        },
+        {
+            //  Create a PIP
+            //
+            "name": "[variables('namePublicIPAddress')]",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2020-11-01",
+            "location": "[parameters('location')]",
+            "tags": "[variables('tags')]",
+            "properties": {
+                "publicIPAllocationMethod": "Dynamic"
+            },
+            "sku": {
+                "name": "Basic"
+            }
         }
     ],
     "outputs": {}
