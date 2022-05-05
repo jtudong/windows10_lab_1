@@ -79,6 +79,10 @@
                 "description": "Flag for the route table creation"
             },
             "defaultValue": false
+        },
+        "adminPassword": {
+            "type": "string",
+            "defaultValue": ""
         }
     },
     "functions": [],
@@ -228,7 +232,67 @@
                     }
                 ]
             }
+        },
+        //  create the Windows 10 VM
+        {
+            "name": "[parameters('vmName')]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2021-03-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+            ],
+            "tags":"[variables('tags')]",
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_B2s"
+                },
+                "osProfile": {
+                    "computerName": "[parameters('vmName')]",
+                    "adminUsername": "sfcadmin",
+                    "adminPassword": "[parameters('adminPassword')]",
+                    "windowsConfiguration": {
+                        "enableAutomaticUpdates": false,
+                        "patchSettings": {
+                            "enableHotpatching": false,
+                            "patchMode": "Manual"
+                        }
+                    }
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsDesktop",
+                        "offer": "Windows-10",
+                        "sku": "win10-21h2-pro-g2",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "name": "[variables('osDiskName')]",
+                        "caching": "ReadWrite",
+                        "createOption": "FromImage"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('networkInterfaceName'))]"
+                        }
+                    ]
+                },
+                "licenseType": "Windows_Client",
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true
+                    }
+                }
+            }
         }
     ],
-    "outputs": {}
+    "outputs": {
+        "username": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Compute/virtualMachines',parameters('vmName'))).osProfile.adminUsername]"
+        }
+    }
 }

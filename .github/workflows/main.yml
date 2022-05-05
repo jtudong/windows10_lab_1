@@ -58,5 +58,5 @@ jobs:
           subscriptionID: ${{ env.subscription_id}}
           region: ${{ env.location}}
           template: ./main.json
-          parameters: ./main.parameters.json
+          parameters: ./main.parameters.json adminPassword=${{ secrets.WIN_10_ADMIN_PASSWORD }}
           deploymentName: main  
