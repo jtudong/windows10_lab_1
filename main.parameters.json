@@ -15,7 +15,7 @@
             "value": "sfc-firewalltest-dev-rg__"
         },
         "gitBranch": {
-            "value": "main_rework"
+            "value": "main_devel"
         },
         "storageAccountPrefix": {
             "value": "fwtest"
@@ -25,9 +25,6 @@
         },
         "networkResourceGroupName": {
             "value": "sfc-network-dev-rg__"
-        },
-        "routeTableDeploymentTemplateName": {
-            "value": "routetable.json"
         },
         "createRouteTable": {
             "value": false
