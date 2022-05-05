@@ -209,7 +209,9 @@
             "apiVersion": "2020-11-01",
             "location": "[parameters('location')]",
             "tags": "[variables('tags')]",
-            "dependsOn": [],
+            "dependsOn": [
+                "[resourceId(parameters('networkResourceGroupName'),'Microsoft.Resources/deployments', 'nestedDeploymentVnetNoRt')]"
+            ],
             "properties": {
                 "ipConfigurations": [
                     {
