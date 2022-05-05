@@ -67,12 +67,12 @@
                 "description": "The name of the vnet resource group"
             }
         },
-        "routeTableDeploymentTemplateName": {
+        /* "routeTableDeploymentTemplateName": {
             "type": "string",
             "metadata": {
                 "description": "The name of the Route Table template"
             }
-        },
+        }, */
         "createRouteTable": {
             "type": "bool",
             "metadata": {

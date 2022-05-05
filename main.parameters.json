@@ -26,9 +26,6 @@
         "networkResourceGroupName": {
             "value": "sfc-network-dev-rg__"
         },
-        "routeTableDeploymentTemplateName": {
-            "value": "routetable.json"
-        },
         "createRouteTable": {
             "value": false
         }
