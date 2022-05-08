@@ -28,6 +28,9 @@
         },
         "createRouteTable": {
             "value": false
+        },
+        "vmName": {
+            "value": "aw3wfwtest01"
         }
     }
 }
