@@ -33,7 +33,8 @@ jobs:
         with:
           inlineScript: |
             #!/bin/bash
-            az group create -n ${{ env.ResourceGroupName }} -l ${{ env.location }}
+            az account set -s 'Network Sandbox'
+            az group create -n ${{ env.resourceGroupName }} -l ${{ env.location }}
             az group create -n ${{ env.networkResourceGroupName }} -l ${{ env.location }}
             echo "Azure resource groups created"
 
