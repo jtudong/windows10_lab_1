@@ -39,7 +39,7 @@ jobs:
 
   armDeployMainTemplate:
     runs-on:  ubuntu-latest
-    needs:  armDeployResourceGroup
+    needs:  deployResourceGroup
     steps:
       - uses: actions/checkout@v3
 
