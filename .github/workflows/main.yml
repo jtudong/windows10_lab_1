@@ -14,11 +14,11 @@ env:
   location: westus3
   # Network Sandbox
   subscriptionID: 17df786b-c9ea-4f50-9cb0-57b80e526f55
-  networkResourceGroup: sfc-network-dev-rg__
-  ResourceGroup: sfc-firewalltest-dev-rg__
+  networkResourceGroupName: sfc-network-dev-rg__
+  resourceGroupName: sfc-firewalltest-dev-rg__
 
 jobs:
-  armDeployResourceGroup:
+  deployResourceGroup:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,15 +29,13 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIAL_NETWORK_SANDBOX }}
 
-      - name: deploy-resource-group-template
-        uses: Azure/arm-deploy@v1
+      - uses: Azure/CLI@v1
         with:
-          scope: subscription
-          subscriptionID: ${{ env.subscription_id}}
-          region: ${{ env.location}}
-          template: ./rg.json
-          parameters: ./rg.parameters.json
-          deploymentName: resourcegroup
+          inlineScript: |
+            #!/bin/bash
+            az group create -n ${{ env.ResourceGroupName }} -l ${{ env.location }}
+            az group create -n ${{ env.networkResourceGroupName }} -l ${{ env.location }}
+            echo "Azure resource groups created"
 
   armDeployMainTemplate:
     runs-on:  ubuntu-latest
@@ -54,7 +52,7 @@ jobs:
         uses: Azure/arm-deploy@v1
         with:
           scope: resourcegroup
-          resourceGroupName:  ${{ env.ResourceGroup }}
+          resourceGroupName:  ${{ env.ResourceGroupName }}
           subscriptionID: ${{ env.subscription_id}}
           region: ${{ env.location}}
           template: ./main.json
