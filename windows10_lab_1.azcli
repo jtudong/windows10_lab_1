@@ -1,7 +1,9 @@
 az account set -s 'Network Sandbox'
 cd /mnt/c/Users/jtudong/code/windows10_lab_1
 
-az group delete -n sfc-firewalltest-dev-rg__ --yes&&az group delete -n sfc-network-dev-rg__ --yes
+az network vnet subnet update -g sfc-network-dev-rg -n dev-firewalltest --vnet-name sfc01-wu3-dev-vnet --remove networkSecurityGroup --nsg dev-firewalltest-nsg
+
+az group delete -n sfc-firewalltest-dev-rg --yes&&az group delete -n sfc-network-dev-rg --yes
 
 az deployment sub validate -l westus3 -f rg.json -p rg.parameters.json
 az deployment sub create -c -l westus3 -f rg.json -p rg.parameters.json

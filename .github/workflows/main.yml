@@ -14,8 +14,8 @@ env:
   location: westus3
   # Network Sandbox
   subscriptionID: 17df786b-c9ea-4f50-9cb0-57b80e526f55
-  networkResourceGroupName: sfc-network-dev-rg
-  resourceGroupName: sfc-firewalltest-dev-rg
+  networkResourceGroupName: sfc-network-dev-rg_
+  resourceGroupName: sfc-firewalltest-dev-rg_
 
 jobs:
   deployResourceGroup:

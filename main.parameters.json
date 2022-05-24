@@ -12,7 +12,7 @@
             "value": "sfc01-wu3-dev-vnet"
         },
         "ResourceGroupName": {
-            "value": "sfc-firewalltest-dev-rg"
+            "value": "sfc-firewalltest-dev-rg_"
         },
         "gitBranch": {
             "value": "master"
@@ -24,7 +24,7 @@
             "value": "dev-firewalltest"
         },
         "networkResourceGroupName": {
-            "value": "sfc-network-dev-rg"
+            "value": "sfc-network-dev-rg_"
         },
         "createRouteTable": {
             "value": false
