@@ -1,11 +1,18 @@
 az account set -s 'Network Sandbox'
 cd /mnt/c/Users/jtudong/code/windows10_lab_1
 
-az network vnet subnet update -g sfc-network-dev-rg_ -n dev-firewalltest --vnet-name sfc01-wu3-dev-vnet --remove networkSecurityGroup --nsg dev-firewalltest-nsg
-az group delete -n sfc-firewalltest-dev-rg_ --yes&&az group delete -n sfc-network-dev-rg_ --yes
+export ENVIRONMENT=dev
+export SUBNET=winprobe
+export $PASSWORD
 
-az group create -l westus3 -n sfc-network-dev-rg_
-az group create -l westus3 -n sfc-firewalltest-dev-rg_
+az network vnet subnet update -g sfc-network-$ENVIRONMENT-rg_ -n $ENVIRONMENT-$SUBNET --vnet-name sfc01-wu3-$ENVIRONMENT-vnet --remove networkSecurityGroup --nsg $ENVIRONMENT-$SUBNET-nsg
+echo deleting sfc-$SUBNET-$ENVIRONMENT-rg_
+az group delete -n sfc-$SUBNET-$ENVIRONMENT-rg_ --yes
+echo deleting sfc-network-$ENVIRONMENT-rg_
+az group delete -n sfc-network-$ENVIRONMENT-rg_ --yes
 
-az deployment group validate -g sfc-firewalltest-dev-rg_ -f main.json -p main.parameters.json
-az deployment group create -c -g sfc-firewalltest-dev-rg_ -f main.json -p main.parameters.json adminPassword='$password'
+az group create -l westus3 -n sfc-network-$ENVIRONMENT-rg_
+az group create -l westus3 -n sfc-$SUBNET-$ENVIRONMENT-rg_
+
+az deployment group validate -g sfc-$SUBNET-$ENVIRONMENT-rg_ -f main.json -p main.parameters.json
+az deployment group create -c -g sfc-$SUBNET-$ENVIRONMENT-rg_ -f main.json -p main.parameters.json adminPassword='$PASSWORD'
