@@ -1,0 +1,32 @@
+name: test
+
+on:
+  workflow_dispatch:
+
+env:
+  location: westus3
+  # Network Sandbox
+  subscriptionID: 17df786b-c9ea-4f50-9cb0-57b80e526f55
+  environment: dev
+  subnet: winprobe
+
+jobs:
+  deployResourceGroup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Azure Login
+        uses: Azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIAL_NETWORK_SANDBOX }}
+
+      - uses: Azure/CLI@v1
+        with:
+          inlineScript: |
+            #!/bin/bash
+            # set account
+            az account set -s 'Network Sandbox'
+            az group create -n sfc-network-${{ env.environment }}-rg_ -l ${{ env.location }}
+            az group create -n sfc-${{ env.subnet }}-${{ env.environment }}-rg_ -l ${{ env.location }}
